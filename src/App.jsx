@@ -1,0 +1,9 @@
+import LandingScene from "./scenes/Landingscene";
+
+export default function App() {
+  return (
+    <div className="w-full h-screen relative bg-black">
+      <LandingScene />
+    </div>
+  );
+}
