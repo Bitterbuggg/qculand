@@ -1,0 +1,51 @@
+qcufront/
+├── public/
+│   ├── models/
+│   │   ├── university_map.glb
+│   │   ├── qcu_bee.glb                 
+│   │   ├── Bldg1.glb
+│   ├── audio/
+│   │   ├── gamebg.ogg
+│   │   ├── click_001.ogg
+│   │   └── click_002.ogg
+│   ├── favicon.ico
+│   └── index.html
+│
+├── src/
+│   │
+│   ├── components/
+│   │   ├── NoteBook.jsx
+│   │   ├── scenes/                     # Each scene self-contained
+│   │   │   ├── LandingScene/
+│   │   │   │   ├── LandingScene.jsx
+│   │   │   │   ├── LandingCamera.jsx
+│   │   │   │   ├── LandingModels.jsx
+│   │   │   │   └── index.js
+│   │   │   │
+│   │   │   ├── AdminScene/
+│   │   │   │   ├── AdminScene.jsx
+│   │   │   │   ├── AdminCamera.jsx
+│   │   │   │   ├── AdminModels.jsx
+│   │   │   │   └── index.js
+│   │   │   │
+│   │   │   └── LibraryScene/
+│   │   │       ├── LibraryScene.jsx
+│   │   │       ├── LibraryCamera.jsx
+│   │   │       ├── LibraryModels.jsx
+│   │   │       └── index.js
+│   │
+│   ├── hooks/
+│   │   ├── useAudio.js                 # React wrapper for AudioManager
+│   │   ├── useStore.js                 # Zustand global store (UI, audio, player)
+│   │   └── useSceneLoader.js           # async scene loading logic
+│   │
+│   ├── styles/
+│   │   └── index.css                   
+│   │
+│   ├── App.jsx                         
+│   └── main.jsx      
+│
+├── package.json
+├── tailwind.config.js
+├── vite.config.js
+└── README.md
