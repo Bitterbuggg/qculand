@@ -29,7 +29,7 @@ function IntroScene({ onStart }) {
   return (
     <motion.div
       key="intro"
-      className="absolute inset-0 flex flex-col items-center justify-center bg-[#a8d0ff] text-white z-50"
+      className="absolute inset-0 flex flex-col items-center justify-center bg-[#a8d0ff] text-[#1e1e1e] z-50"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 1 }}
