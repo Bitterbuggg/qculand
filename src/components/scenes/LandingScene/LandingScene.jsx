@@ -11,7 +11,6 @@ import PlayerUI from "./PlayerUI";
 export default function LandingScene({ onEnterCampus, onEnterDorm }) { 
   const [campusEntered, setCampusEntered] = useState(false);
   const [showDormModal, setShowDormModal] = useState(false);
-  const [nearbyBuilding, setNearbyBuilding] = useState(null);
   const [showPlayer, setShowPlayer] = useState(false);
 
   const buildingPositions = [
@@ -35,17 +34,6 @@ export default function LandingScene({ onEnterCampus, onEnterDorm }) {
     // Don't call onEnterCampus - we want to stay on landing scene with player control
   };
 
-  const handleNearBuilding = (building) => {
-    setNearbyBuilding(building);
-  };
-
-  const handleInteractWithBuilding = () => {
-    if (nearbyBuilding?.id === 'dorm') {
-      setShowDormModal(true);
-    }
-    // Add more building interactions here
-  };
-
   return (
     <div className="w-full h-full fixed top-0 left-0">
       <Canvas shadows camera={{ position: [0, 3, 8], fov: 55 }}>
@@ -63,7 +51,7 @@ export default function LandingScene({ onEnterCampus, onEnterDorm }) {
         <LandingModels onDormClick={handleDormClick} />
         
         {/* Show player after entering campus */}
-        {showPlayer && <Player onNearBuilding={handleNearBuilding} />}
+        {showPlayer && <Player />}
         
         {/* Disable orbit controls when player is active */}
         <OrbitControls 
@@ -79,10 +67,7 @@ export default function LandingScene({ onEnterCampus, onEnterDorm }) {
       )}
 
       {showPlayer && (
-        <PlayerUI 
-          nearbyBuilding={nearbyBuilding}
-          onInteractWithBuilding={handleInteractWithBuilding}
-        />
+        <PlayerUI />
       )}
 
       {/* Dorm Entry Modal */}

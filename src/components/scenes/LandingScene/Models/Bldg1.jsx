@@ -2,22 +2,32 @@ import React, { useMemo, useState } from "react";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 
-export default function Bldg1({ onClick, isInteractable, ...props }) {
+export default function Bldg1({ onClick, isInteractable, buildingId, ...props }) {
   const { scene } = useGLTF("./models/Bldg1.glb");
   const [hovered, setHovered] = useState(false);
 
-  const clonedScene = useMemo(() => scene.clone(true), [scene]);
-
-  // Add hover effect for interactable buildings
-  useMemo(() => {
-    if (isInteractable) {
-      clonedScene.traverse((child) => {
-        if (child.isMesh) {
-          child.userData.originalEmissive = child.material.emissive?.clone() || new THREE.Color(0x000000);
+  // Clone the scene for this specific instance
+  const clonedScene = useMemo(() => {
+    const clone = scene.clone(true);
+    
+    // Clone materials for this instance so each building has independent materials
+    clone.traverse((child) => {
+      if (child.isMesh) {
+        if (Array.isArray(child.material)) {
+          child.material = child.material.map(mat => mat.clone());
+        } else if (child.material) {
+          child.material = child.material.clone();
         }
-      });
-    }
-  }, [clonedScene, isInteractable]);
+        
+        // Store original emissive for this instance
+        if (isInteractable && child.material.emissive) {
+          child.userData.originalEmissive = child.material.emissive.clone();
+        }
+      }
+    });
+    
+    return clone;
+  }, [scene, isInteractable]);
 
   // Handle hover effect
   const handlePointerOver = (e) => {

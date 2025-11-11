@@ -2,12 +2,12 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
-export default function Player({ onNearBuilding }) {
+export default function Player() {
   const playerRef = useRef();
   const { camera, raycaster } = useThree();
   
   // Movement state
-  const [position, setPosition] = useState([0, 0.5, 5]);
+  const [position, setPosition] = useState([0, 0, 5]);
   const velocity = useRef(new THREE.Vector3());
   const targetPosition = useRef(null);
   const moveSpeed = 0.03;
@@ -21,12 +21,18 @@ export default function Player({ onNearBuilding }) {
     d: false,
   });
 
-  // Camera offset
-  const cameraOffset = useRef(new THREE.Vector3(0, 2.5, 4));
+  // Camera offset - moved closer for smaller player
+  const cameraOffset = useRef(new THREE.Vector3(0, 1.5, 2.5));
   const cameraLookAt = useRef(new THREE.Vector3());
-  
-  // Track last nearby building to avoid spam
-  const lastNearbyBuilding = useRef(null);
+  const cameraAngle = useRef(0); // Horizontal rotation angle
+  const cameraPitch = useRef(0.3); // Vertical angle (pitch)
+  const cameraDistance = useRef(2.5); // Zoom distance
+
+  // Mouse drag state for camera control
+  const isDragging = useRef(false);
+  const dragStartPos = useRef({ x: 0, y: 0 });
+  const lastMouseX = useRef(0);
+  const lastMouseY = useRef(0);
 
   // Handle keyboard input
   useEffect(() => {
@@ -56,6 +62,19 @@ export default function Player({ onNearBuilding }) {
   // Handle mouse click for movement
   useEffect(() => {
     const handleClick = (event) => {
+      // Only process left clicks
+      if (event.button !== 0) return;
+      
+      // Ignore if was dragging camera (moved more than 5 pixels)
+      const dragDistance = Math.sqrt(
+        Math.pow(event.clientX - dragStartPos.current.x, 2) +
+        Math.pow(event.clientY - dragStartPos.current.y, 2)
+      );
+      
+      if (dragDistance > 5) {
+        return;
+      }
+
       // Ignore clicks on UI elements
       if (event.target.tagName !== 'CANVAS') return;
 
@@ -64,26 +83,107 @@ export default function Player({ onNearBuilding }) {
       const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-      // Raycast to find ground position
-      raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
+      // Create a new raycaster from the current camera position
+      const mouse = new THREE.Vector2(x, y);
+      const newRaycaster = new THREE.Raycaster();
+      newRaycaster.setFromCamera(mouse, camera);
       
       // Find ground plane (y = 0)
       const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
       const intersectPoint = new THREE.Vector3();
-      raycaster.ray.intersectPlane(groundPlane, intersectPoint);
+      const result = newRaycaster.ray.intersectPlane(groundPlane, intersectPoint);
 
-      if (intersectPoint) {
-        targetPosition.current = intersectPoint.clone();
-        targetPosition.current.y = 0.5; // Keep player slightly above ground
+      if (result && intersectPoint) {
+        // Clamp the target position to boundaries
+        const clampedX = THREE.MathUtils.clamp(intersectPoint.x, -8, 8);
+        const clampedZ = THREE.MathUtils.clamp(intersectPoint.z, -6, 6);
+        
+        // Set new target - this will override any previous target
+        targetPosition.current = new THREE.Vector3(clampedX, 0, clampedZ);
       }
+    };
+
+    const handleMouseDown = (event) => {
+      // Store starting position for all mouse buttons
+      dragStartPos.current = { x: event.clientX, y: event.clientY };
+      
+      // Right click or middle mouse button for camera rotation
+      if (event.button === 2 || event.button === 1) {
+        event.preventDefault();
+        isDragging.current = false;
+        lastMouseX.current = event.clientX;
+        lastMouseY.current = event.clientY;
+      }
+    };
+
+    const handleMouseMove = (event) => {
+      if (event.buttons === 2 || event.buttons === 4) { // Right or middle button
+        isDragging.current = true;
+        const deltaX = event.clientX - lastMouseX.current;
+        const deltaY = event.clientY - lastMouseY.current;
+        
+        // Update camera angle (horizontal rotation)
+        cameraAngle.current -= deltaX * 0.005;
+        
+        // Update camera pitch (vertical rotation)
+        cameraPitch.current = THREE.MathUtils.clamp(
+          cameraPitch.current + deltaY * 0.003,
+          0.1,  // Min pitch (looking down)
+          1.2   // Max pitch (looking up)
+        );
+        
+        lastMouseX.current = event.clientX;
+        lastMouseY.current = event.clientY;
+      }
+    };
+
+    const handleMouseUp = (event) => {
+      if (event.button === 2 || event.button === 1) {
+        // Reset drag flag after a moment
+        setTimeout(() => {
+          isDragging.current = false;
+        }, 10);
+      }
+    };
+
+    const handleContextMenu = (event) => {
+      event.preventDefault(); // Prevent right-click context menu
+    };
+
+    const handleWheel = (event) => {
+      event.preventDefault();
+      
+      // Adjust zoom distance based on wheel delta
+      const zoomSpeed = 0.001;
+      const delta = event.deltaY * zoomSpeed;
+      
+      // Clamp zoom distance between 1.5 and 5 units
+      cameraDistance.current = THREE.MathUtils.clamp(
+        cameraDistance.current + delta,
+        1.5,  // Min zoom (closest)
+        5.0   // Max zoom (farthest)
+      );
     };
 
     const canvas = document.querySelector('canvas');
     if (canvas) {
       canvas.addEventListener('click', handleClick);
-      return () => canvas.removeEventListener('click', handleClick);
+      canvas.addEventListener('mousedown', handleMouseDown);
+      canvas.addEventListener('mousemove', handleMouseMove);
+      canvas.addEventListener('mouseup', handleMouseUp);
+      canvas.addEventListener('contextmenu', handleContextMenu);
+      canvas.addEventListener('wheel', handleWheel, { passive: false });
+      
+      return () => {
+        canvas.removeEventListener('click', handleClick);
+        canvas.removeEventListener('mousedown', handleMouseDown);
+        canvas.removeEventListener('mousemove', handleMouseMove);
+        canvas.removeEventListener('mouseup', handleMouseUp);
+        canvas.removeEventListener('contextmenu', handleContextMenu);
+        canvas.removeEventListener('wheel', handleWheel);
+      };
     }
-  }, [camera, raycaster]);
+  }, [camera]);
 
   // Update player position and camera every frame
   useFrame(() => {
@@ -147,89 +247,67 @@ export default function Player({ onNearBuilding }) {
     // Rotate player to face movement direction
     if (velocity.current.length() > 0.01) {
       const angle = Math.atan2(velocity.current.x, velocity.current.z);
-      player.rotation.y = angle;
+      player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, angle, 0.1);
     }
 
-    // Smooth camera follow
+    // Smooth camera follow with orbital rotation and zoom
+    const radius = cameraDistance.current; // Use dynamic zoom distance
+    const offsetX = Math.sin(cameraAngle.current) * radius * Math.cos(cameraPitch.current);
+    const offsetY = 1.5 + Math.sin(cameraPitch.current) * radius;
+    const offsetZ = Math.cos(cameraAngle.current) * radius * Math.cos(cameraPitch.current);
+    
     const idealCameraPosition = new THREE.Vector3(
-      player.position.x + cameraOffset.current.x,
-      player.position.y + cameraOffset.current.y,
-      player.position.z + cameraOffset.current.z
+      player.position.x + offsetX,
+      player.position.y + offsetY,
+      player.position.z + offsetZ
     );
 
-    camera.position.lerp(idealCameraPosition, 0.1);
+    // Smoother camera position update
+    camera.position.lerp(idealCameraPosition, 0.2);
 
-    // Camera look at player
+    // Always look directly at player - no interpolation needed here
     cameraLookAt.current.set(
       player.position.x,
-      player.position.y + 0.2, // Adjusted for smaller player
+      player.position.y + 0.05,
       player.position.z
     );
     camera.lookAt(cameraLookAt.current);
-
-    // Check for nearby buildings for interaction
-    checkBuildingProximity(player.position);
   });
-
-  // Check if player is near any interactable building
-  const checkBuildingProximity = (playerPos) => {
-    const buildingPositions = [
-      { name: 'Dormitory', pos: new THREE.Vector3(-2, 0, 0), id: 'dorm', icon: '🏠' },
-      // Add more buildings here as they become interactable
-    ];
-
-    let nearestBuilding = null;
-    let minDistance = 2.5; // Interaction radius
-
-    buildingPositions.forEach(building => {
-      const distance = playerPos.distanceTo(building.pos);
-      if (distance < minDistance) {
-        minDistance = distance;
-        nearestBuilding = building;
-      }
-    });
-
-    // Only notify if the nearby building changed
-    if (nearestBuilding?.id !== lastNearbyBuilding.current?.id) {
-      lastNearbyBuilding.current = nearestBuilding;
-      onNearBuilding?.(nearestBuilding);
-    }
-  };
 
   return (
     <group ref={playerRef} position={position}>
       {/* Simple placeholder character - yellow capsule with face */}
-      {/* Scaled down to match QcuBee height (scale 0.025) */}
-      <group position={[0, 0, 0]} scale={0.25}>
-        {/* Body */}
-        <mesh position={[0, 0.5, 0]} castShadow>
+      {/* Scaled down to 1/4 size, positioned to touch the ground */}
+      <group position={[0, 0.08, 0]} scale={0.0625}>
+        {/* Body - adjusted to start from ground */}
+        <mesh position={[0, 0.9, 0]} castShadow>
           <capsuleGeometry args={[0.3, 0.8, 8, 16]} />
           <meshStandardMaterial color="#FFD700" />
         </mesh>
         
         {/* Head */}
-        <mesh position={[0, 1.3, 0]} castShadow>
+        <mesh position={[0, 1.7, 0]} castShadow>
           <sphereGeometry args={[0.35, 16, 16]} />
           <meshStandardMaterial color="#FFE44D" />
         </mesh>
 
         {/* Eyes */}
-        <mesh position={[-0.12, 1.35, 0.28]}>
+        <mesh position={[-0.12, 1.75, 0.28]}>
           <sphereGeometry args={[0.06, 8, 8]} />
           <meshStandardMaterial color="#000000" />
         </mesh>
-        <mesh position={[0.12, 1.35, 0.28]}>
+        <mesh position={[0.12, 1.75, 0.28]}>
           <sphereGeometry args={[0.06, 8, 8]} />
           <meshStandardMaterial color="#000000" />
         </mesh>
 
         {/* Smile */}
-        <mesh position={[0, 1.2, 0.3]} rotation={[0, 0, 0]}>
+        <mesh position={[0, 1.6, 0.3]} rotation={[0, 0, 0]}>
           <torusGeometry args={[0.12, 0.02, 8, 16, Math.PI]} />
           <meshStandardMaterial color="#000000" />
         </mesh>
 
-        {/* Shadow blob */}
+        {/* Shadow blob on ground */}
         <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
           <circleGeometry args={[0.4, 16]} />
           <meshBasicMaterial color="#000000" opacity={0.3} transparent />
