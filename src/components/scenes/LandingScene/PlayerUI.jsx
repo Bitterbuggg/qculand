@@ -15,6 +15,7 @@ export default function PlayerUI() {
           <span>🖱️ Left-click to move</span>
           <span>⌨️ WASD to walk</span>
           <span>🔄 Right-click drag to rotate camera</span>
+          <span>🔍 Mouse wheel to zoom</span>
         </div>
       </motion.div>
     </div>

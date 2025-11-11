@@ -26,6 +26,7 @@ export default function Player() {
   const cameraLookAt = useRef(new THREE.Vector3());
   const cameraAngle = useRef(0); // Horizontal rotation angle
   const cameraPitch = useRef(0.3); // Vertical angle (pitch)
+  const cameraDistance = useRef(2.5); // Zoom distance
 
   // Mouse drag state for camera control
   const isDragging = useRef(false);
@@ -149,6 +150,21 @@ export default function Player() {
       event.preventDefault(); // Prevent right-click context menu
     };
 
+    const handleWheel = (event) => {
+      event.preventDefault();
+      
+      // Adjust zoom distance based on wheel delta
+      const zoomSpeed = 0.001;
+      const delta = event.deltaY * zoomSpeed;
+      
+      // Clamp zoom distance between 1.5 and 5 units
+      cameraDistance.current = THREE.MathUtils.clamp(
+        cameraDistance.current + delta,
+        1.5,  // Min zoom (closest)
+        5.0   // Max zoom (farthest)
+      );
+    };
+
     const canvas = document.querySelector('canvas');
     if (canvas) {
       canvas.addEventListener('click', handleClick);
@@ -156,6 +172,7 @@ export default function Player() {
       canvas.addEventListener('mousemove', handleMouseMove);
       canvas.addEventListener('mouseup', handleMouseUp);
       canvas.addEventListener('contextmenu', handleContextMenu);
+      canvas.addEventListener('wheel', handleWheel, { passive: false });
       
       return () => {
         canvas.removeEventListener('click', handleClick);
@@ -163,6 +180,7 @@ export default function Player() {
         canvas.removeEventListener('mousemove', handleMouseMove);
         canvas.removeEventListener('mouseup', handleMouseUp);
         canvas.removeEventListener('contextmenu', handleContextMenu);
+        canvas.removeEventListener('wheel', handleWheel);
       };
     }
   }, [camera]);
@@ -232,8 +250,8 @@ export default function Player() {
       player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, angle, 0.1);
     }
 
-    // Smooth camera follow with orbital rotation
-    const radius = 2.5; // Distance from player
+    // Smooth camera follow with orbital rotation and zoom
+    const radius = cameraDistance.current; // Use dynamic zoom distance
     const offsetX = Math.sin(cameraAngle.current) * radius * Math.cos(cameraPitch.current);
     const offsetY = 1.5 + Math.sin(cameraPitch.current) * radius;
     const offsetZ = Math.cos(cameraAngle.current) * radius * Math.cos(cameraPitch.current);
