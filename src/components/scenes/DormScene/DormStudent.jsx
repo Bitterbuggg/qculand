@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
 import { useGLTF, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
 
-export default function DormStudent({ action = 'typing' }) {
+function DormStudent({ action = 'typing' }) {
   const group = useRef();
   const { scene, animations } = useGLTF('./models/qcu_student_1.glb');
   const { actions } = useAnimations(animations, group);
@@ -30,6 +30,36 @@ export default function DormStudent({ action = 'typing' }) {
     };
   }, [action, actions]);
 
+  // Cleanup resources on unmount
+  useEffect(() => {
+    return () => {
+      // Stop all animations
+      if (actions) {
+        Object.values(actions).forEach((action) => {
+          if (action) action.stop();
+        });
+      }
+
+      // Dispose geometries, materials, and textures
+      if (scene) {
+        scene.traverse((child) => {
+          if (child.geometry) {
+            child.geometry.dispose();
+          }
+          if (child.material) {
+            if (Array.isArray(child.material)) {
+              child.material.forEach((material) => {
+                disposeMaterial(material);
+              });
+            } else {
+              disposeMaterial(child.material);
+            }
+          }
+        });
+      }
+    };
+  }, [scene, actions]);
+
   return (
     <group ref={group} position={[0, -0.5, 0.65]} rotation={[0, 0, 0]} scale={0.025}>
       <primitive object={scene} />
@@ -37,4 +67,27 @@ export default function DormStudent({ action = 'typing' }) {
   );
 }
 
+// Helper function to dispose materials and textures
+function disposeMaterial(material) {
+  if (!material) return;
+  
+  // Dispose textures
+  if (material.map) material.map.dispose();
+  if (material.lightMap) material.lightMap.dispose();
+  if (material.bumpMap) material.bumpMap.dispose();
+  if (material.normalMap) material.normalMap.dispose();
+  if (material.specularMap) material.specularMap.dispose();
+  if (material.envMap) material.envMap.dispose();
+  if (material.aoMap) material.aoMap.dispose();
+  if (material.roughnessMap) material.roughnessMap.dispose();
+  if (material.metalnessMap) material.metalnessMap.dispose();
+  if (material.emissiveMap) material.emissiveMap.dispose();
+  
+  material.dispose();
+}
+
+// Preload model
 useGLTF.preload('./models/qcu_student_1.glb');
+
+// Export memoized component to prevent unnecessary re-renders
+export default memo(DormStudent);

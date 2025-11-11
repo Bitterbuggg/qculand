@@ -4,7 +4,7 @@ import Bldg1 from "./Models/Bldg1";
 import QcuBee from './Models/QcuBee';
 import Cipher from './Models/Cipher';
 
-export default function LandingModels() {
+export default function LandingModels({ onDormClick }) {
   const campus = useGLTF('./models/clickright_map.glb');
 
   return (
@@ -13,7 +13,13 @@ export default function LandingModels() {
       <Bldg1 position={[0, 0, -4.35]} rotation={[0, 0, 0]} />
       <Bldg1 position={[-2, 0, -2.5]} rotation={[0, Math.PI / 2, 0]} />
       <Bldg1 position={[2, 0, -2.5]} rotation={[0, -Math.PI /2, 0]} />
-      <Bldg1 position={[-2, 0, 0]} rotation={[0, Math.PI /2, 0]} />
+      {/* West quad 2 (Front-left) - Dorm Building (Interactable) */}
+      <Bldg1 
+        position={[-2, 0, 0]} 
+        rotation={[0, Math.PI /2, 0]} 
+        isInteractable 
+        onClick={onDormClick}
+      />
       <Bldg1 position={[2, 0, 0]} rotation={[0, -Math.PI /2, 0]} />
       <QcuBee scale={0.025} position={[0, 0, 3.75]} />
       <Cipher scale={0.125} position={[-0.075, 0.05, 3.25]} rotation={[0.275, 0.25, 0.15]} />
