@@ -125,7 +125,10 @@ export default function SceneManager() {
             exit="exit"
             className="absolute w-full h-full"
           >
-            <LandingScene onEnterCampus={() => handleSceneChange("dorm")} />
+            <LandingScene 
+              onEnterCampus={() => handleSceneChange("dorm")}
+              onEnterDorm={() => handleSceneChange("dorm")}
+            />
           </motion.div>
         )}
 
@@ -138,7 +141,7 @@ export default function SceneManager() {
             exit="exit"
             className="absolute w-full h-full"
           >
-            <DormScene />
+            <DormScene onExitDorm={() => handleSceneChange("landing")} />
           </motion.div>
         )}
       </AnimatePresence>
