@@ -10,7 +10,7 @@ import PlayerUI from "./PlayerUI";
 
 export default function LandingScene({ onEnterCampus, onEnterDorm }) { 
   const [campusEntered, setCampusEntered] = useState(false);
-  const [showDormModal, setShowDormModal] = useState(false);
+  const [showBuildingModal, setShowBuildingModal] = useState(null); // null or buildingId
   const [showPlayer, setShowPlayer] = useState(false);
 
   const buildingPositions = [
@@ -19,13 +19,50 @@ export default function LandingScene({ onEnterCampus, onEnterDorm }) {
     { position: [0, 0, -4.05] },
   ];
 
-  const handleDormClick = () => {
-    setShowDormModal(true);
+  // Building configurations
+  const buildingConfigs = {
+    "center-quad": {
+      name: "Server Room",
+      icon: "🔒",
+      description: "The main server room. Currently locked for maintenance.",
+      canEnter: false
+    },
+    "west-quad-1": {
+      name: "Library",
+      icon: "📚",
+      description: "The campus library. A quiet place to study and research.",
+      canEnter: false
+    },
+    "east-quad-1": {
+      name: "Cafeteria",
+      icon: "🍽️",
+      description: "The student cafeteria. Grab a meal and socialize with friends.",
+      canEnter: false
+    },
+    "dorm": {
+      name: "Dormitory",
+      icon: "🏠",
+      description: "Welcome to the student dormitory. Learn essential cybersecurity habits to protect your personal devices and data.",
+      canEnter: true
+    },
+    "east-quad-2": {
+      name: "Faculty Office",
+      icon: "👨‍🏫",
+      description: "Faculty offices and administrative services.",
+      canEnter: false
+    }
   };
 
-  const handleEnterDorm = () => {
-    setShowDormModal(false);
-    onEnterDorm?.();
+  const handleBuildingClick = (buildingId) => {
+    setShowBuildingModal(buildingId);
+  };
+
+  const handleEnterBuilding = (buildingId) => {
+    setShowBuildingModal(null);
+    if (buildingId === "dorm") {
+      onEnterDorm?.();
+    }
+    // Other buildings will be handled later
   };
 
   const handleEnterCampus = () => {
@@ -48,7 +85,7 @@ export default function LandingScene({ onEnterCampus, onEnterDorm }) {
           />
         )}
 
-        <LandingModels onDormClick={handleDormClick} />
+        <LandingModels onBuildingClick={handleBuildingClick} />
         
         {/* Show player after entering campus */}
         {showPlayer && <Player />}
@@ -70,15 +107,15 @@ export default function LandingScene({ onEnterCampus, onEnterDorm }) {
         <PlayerUI />
       )}
 
-      {/* Dorm Entry Modal */}
+      {/* Building Entry Modal */}
       <AnimatePresence>
-        {showDormModal && (
+        {showBuildingModal && buildingConfigs[showBuildingModal] && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="absolute inset-0 flex items-center justify-center bg-black/40 pointer-events-auto"
-            onClick={() => setShowDormModal(false)}
+            onClick={() => setShowBuildingModal(null)}
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -88,21 +125,29 @@ export default function LandingScene({ onEnterCampus, onEnterDorm }) {
               className="bg-white rounded-3xl shadow-2xl p-8 max-w-md text-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="text-6xl mb-4">🏠</div>
-              <h2 className="text-3xl font-bold text-gray-800 mb-3">Dormitory</h2>
+              <div className="text-6xl mb-4">{buildingConfigs[showBuildingModal].icon}</div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-3">
+                {buildingConfigs[showBuildingModal].name}
+              </h2>
               <p className="text-gray-600 mb-6">
-                Welcome to the student dormitory. Learn essential cybersecurity habits to protect your personal devices and data.
+                {buildingConfigs[showBuildingModal].description}
               </p>
               <div className="space-y-3">
+                {buildingConfigs[showBuildingModal].canEnter ? (
+                  <motion.button
+                    onClick={() => handleEnterBuilding(showBuildingModal)}
+                    className="w-full px-6 py-3 bg-blue-500 text-white font-bold rounded-full hover:bg-blue-600 transition shadow-lg"
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Enter {buildingConfigs[showBuildingModal].name}
+                  </motion.button>
+                ) : (
+                  <div className="w-full px-6 py-3 bg-gray-300 text-gray-500 font-bold rounded-full cursor-not-allowed">
+                    Coming Soon
+                  </div>
+                )}
                 <motion.button
-                  onClick={handleEnterDorm}
-                  className="w-full px-6 py-3 bg-blue-500 text-white font-bold rounded-full hover:bg-blue-600 transition shadow-lg"
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Enter Dorm
-                </motion.button>
-                <motion.button
-                  onClick={() => setShowDormModal(false)}
+                  onClick={() => setShowBuildingModal(null)}
                   className="w-full px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-full hover:bg-gray-300 transition"
                   whileTap={{ scale: 0.95 }}
                 >
