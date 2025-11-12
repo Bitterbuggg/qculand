@@ -157,10 +157,10 @@ export default function Player() {
       const zoomSpeed = 0.001;
       const delta = event.deltaY * zoomSpeed;
       
-      // Clamp zoom distance between 1.5 and 5 units
+      // Clamp zoom distance between 0.8 and 5 units
       cameraDistance.current = THREE.MathUtils.clamp(
         cameraDistance.current + delta,
-        1.5,  // Min zoom (closest)
+        0.8,  // Min zoom (closest)
         5.0   // Max zoom (farthest)
       );
     };

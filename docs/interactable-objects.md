@@ -59,24 +59,53 @@ This document catalogs every in-game control the player can click or tap in the 
 ## Landing Scene Layout Details
 
 - **Campus root** (`src/components/scenes/LandingScene/LandingModels.jsx`): Loads `./models/clickright_map.glb` once and anchors all props at world origin `(0, 0, 0)`.
-- **Bldg1 instances**: Five clones of `Bldg1.glb` are spawned, each positioned on the X/Z plane (Y always 0). Rotations are in radians around the X, Y, Z axes respectively.
+- **Bldg1 instances**: Five clones of `Bldg1.glb` are spawned, each positioned on the X/Z plane (Y always 0). Rotations are in radians around the X, Y, Z axes respectively. All buildings are now interactable with hover effects and click handlers.
 
   | Instance | Position (x, y, z) | Rotation (x, y, z) | Interactable |
   | --- | --- | --- | --- |
-  | Center quad | `(0, 0, -4.35)` | `(0, 0, 0)` | No |
-  | West quad 1 | `(-2, 0, -2.5)` | `(0, pi/2, 0)` | No |
-  | East quad 1 | `(2, 0, -2.5)` | `(0, -pi/2, 0)` | No |
-  | West quad 2 (Dorm) | `(-2, 0, 0)` | `(0, pi/2, 0)` | **Yes** |
-  | East quad 2 | `(2, 0, 0)` | `(0, -pi/2, 0)` | No |
+  | Center quad (Server Room) `(0, 0, -4.35)` | `(0, 0, 0)` | **Yes** (🔒 Coming Soon) |
+  | West quad 1 (Library) `(-2, 0, -2.5)` | `(0, pi/2, 0)` | **Yes** (📚 Coming Soon) |
+  | East quad 1 (Cafeteria) `(2, 0, -2.5)` | `(0, -pi/2, 0)` | **Yes** (🍽️ Coming Soon) |
+  | West quad 2 (Dorm) `(-2, 0, 0)` | `(0, pi/2, 0)` | **Yes** (🏠 Enterable) |
+  | East quad 2 (Faculty) `(2, 0, 0)` | `(0, -pi/2, 0)` | **Yes** (👨‍🏫 Coming Soon) |
 
-- **West quad 2 (Front-left) - Dorm Building** (`src/components/scenes/LandingScene/Models/Bldg1.jsx`): This building is interactable. When hovered, it glows blue and the cursor changes to pointer. Clicking it opens a modal with building information and an "Enter Dorm" button.
-  - **Position**: `(-2, 0, 0)` - Front-left building on the left side of the walkway
-  - **Hover effect**: Blue emissive glow (`#4488ff`) applied to all meshes
-  - **Click action**: Opens dormitory entry modal
-  - **Proximity interaction**: When player character walks within 2.5 units of `(-2, 0, 0)`, an interaction prompt appears allowing entry without clicking the building directly
+- **All Buildings** (`src/components/scenes/LandingScene/Models/Bldg1.jsx`): Every building now features:
+  - **Hover effect**: Blue emissive glow (`#4488ff`) applied to all meshes when cursor hovers
+  - **Click action**: Opens a modal with building information
+  - **Per-instance materials**: Each building has independently cloned materials for isolated hover states
+  - **Cursor change**: Pointer cursor appears on hover to indicate interactivity
+
+- **Building Modals** (`src/components/scenes/LandingScene/LandingScene.jsx`): Each building displays a unique modal when clicked:
   
-- **Dorm Entry Modal** (`src/components/scenes/LandingScene/LandingScene.jsx`): Modal that appears when clicking the West quad 2 (front-left) building OR when player is nearby and clicks "Enter Building".
-  - **Enter Dorm button**: Transitions player from landing scene to the full DormScene experience with loading screen
+  1. **Server Room (Locked)** 🔒
+     - Position: `(0, 0, -4.35)` - Center quad building
+     - Description: "The main server room. Currently locked for maintenance."
+     - Status: Coming Soon (disabled entry button)
+  
+  2. **Library** 📚
+     - Position: `(-2, 0, -2.5)` - Front-left building (back position)
+     - Description: "The campus library. A quiet place to study and research."
+     - Status: Coming Soon (disabled entry button)
+  
+  3. **Cafeteria** 🍽️
+     - Position: `(2, 0, -2.5)` - Front-right building (back position)
+     - Description: "The student cafeteria. Grab a meal and socialize with friends."
+     - Status: Coming Soon (disabled entry button)
+  
+  4. **Dormitory** 🏠
+     - Position: `(-2, 0, 0)` - Front-left building on the left side of the walkway
+     - Description: "Welcome to the student dormitory. Learn essential cybersecurity habits to protect your personal devices and data."
+     - Status: **Enterable** - "Enter Dormitory" button transitions to DormScene
+     - **Proximity interaction**: When player character walks within 2.5 units of `(-2, 0, 0)`, an interaction prompt appears
+  
+  5. **Faculty Office** 👨‍🏫
+     - Position: `(2, 0, 0)` - Front-right building on the right side of the walkway
+     - Description: "Faculty offices and administrative services."
+     - Status: Coming Soon (disabled entry button)
+
+- **Modal Actions**:
+  - **Enter [Building] button**: Only enabled for Dormitory; transitions to the building's scene
+  - **Coming Soon button**: Displayed for locked buildings; disabled/grayed out
   - **Cancel button**: Closes the modal and returns to campus exploration
 
 - **Mascots**: `QcuBee` sits at `(0, 0, 3.75)` (scale `0.025`), while `Cipher` perches at `(-0.075, 0.05, 3.25)` with a slight tilt `(0.275, 0.25, 0.15)`.
