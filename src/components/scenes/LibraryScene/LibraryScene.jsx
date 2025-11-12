@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useState, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
+import { Html } from '@react-three/drei';
 import LoadingFallback from '../../LoadingFallback';
 import ErrorBoundary from '../../ErrorBoundary';
 import LibraryPlayer from './LibraryPlayer';
@@ -34,10 +35,10 @@ export default function LibraryScene({ onExit }) {
 		<div className="w-full h-full fixed top-0 left-0">
 			<ErrorBoundary>
 				<Canvas shadows camera={{ position: [0, 2, 4], fov: 60 }}>
-					<color attach="background" args={["#1a1a2e"]} />
-					<ambientLight intensity={0.8} />
-					<directionalLight position={[5, 10, 5]} intensity={0.6} castShadow />
-					<pointLight position={[0, 2, -1.6]} intensity={1.2} color="#ff6b6b" distance={5} />
+					<color attach="background" args={["#2a2a4e"]} />
+					<ambientLight intensity={1.5} />
+					<directionalLight position={[5, 10, 5]} intensity={1.2} castShadow />
+					<pointLight position={[0, 2, -1.6]} intensity={2.0} color="#ff8888" distance={8} />
 
 					<Suspense fallback={<LoadingFallback />}>
 						<LibraryEnvironment />
@@ -59,6 +60,18 @@ export default function LibraryScene({ onExit }) {
 							onClick={(e) => { e.stopPropagation(); handleCipherClick(); }}
 						>
 							<CipherModel scale={0.7} />
+							
+							{/* Cipher name hover indicator - positioned above Cipher's head */}
+							{showCipherName && !showScenarios && (
+								<Html position={[0, 2.5, 0]} center distanceFactor={10}>
+									<div className="pointer-events-none">
+										<div className="bg-red-900/90 text-red-100 px-6 py-3 rounded-lg shadow-2xl border-2 border-red-700 backdrop-blur-sm whitespace-nowrap">
+											<div className="text-2xl font-bold text-center mb-1">🕵️ CIPHER</div>
+											<div className="text-xs text-red-300 text-center">Click to interact</div>
+										</div>
+									</div>
+								</Html>
+							)}
 						</group>
 						
 						{/* Player with movement */}
@@ -66,16 +79,6 @@ export default function LibraryScene({ onExit }) {
 					</Suspense>
 				</Canvas>
 			</ErrorBoundary>
-
-			{/* Cipher name hover indicator */}
-			{showCipherName && !showScenarios && (
-				<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-40">
-					<div className="bg-red-900/90 text-red-100 px-6 py-3 rounded-lg shadow-2xl border-2 border-red-700 backdrop-blur-sm">
-						<div className="text-2xl font-bold text-center mb-1">🕵️ CIPHER</div>
-						<div className="text-xs text-red-300 text-center">Click to interact</div>
-					</div>
-				</div>
-			)}
 
 			{/* Player movement controls UI */}
 			{!showScenarios && <LibraryPlayerUI />}

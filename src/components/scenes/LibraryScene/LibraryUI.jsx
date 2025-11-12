@@ -6,7 +6,7 @@ import { libraryScenarios } from './scenarios';
 const ChoiceButton = memo(({ choice, onChoice }) => (
   <motion.button
     onClick={() => onChoice(choice)}
-    className="w-full py-3 px-4 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition text-left"
+    className="w-full py-3 px-4 rounded-lg bg-linear-to-r from-red-900 to-red-800 hover:from-red-800 hover:to-red-700 text-red-100 transition text-left border border-red-700/50 shadow-lg"
     whileTap={{ scale: 0.98 }}
   >
     {choice.text}
@@ -50,13 +50,13 @@ export default function LibraryUI({ onScenarioComplete, onFeedback, onExitLibrar
         {isCompleted && (
           <motion.div
             key="completion-screen"
-            className="absolute inset-0 flex justify-center items-center bg-black/30 pointer-events-auto"
+            className="absolute inset-0 flex justify-center items-center bg-black/60 pointer-events-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-white rounded-3xl shadow-2xl p-8 max-w-lg text-center"
+              className="bg-linear-to-br from-gray-900 to-red-950 rounded-3xl shadow-2xl p-8 max-w-lg text-center border-2 border-red-800"
               initial={{ scale: 0.8, opacity: 0, y: 50 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.8, opacity: 0, y: 50 }}
@@ -70,13 +70,13 @@ export default function LibraryUI({ onScenarioComplete, onFeedback, onExitLibrar
               >
                 🎉
               </motion.div>
-              <h2 className="text-3xl font-bold text-gray-800 mb-3">Well Done!</h2>
-              <p className="text-gray-700 text-lg mb-4">
+              <h2 className="text-3xl font-bold text-red-100 mb-3">Well Done!</h2>
+              <p className="text-red-200 text-lg mb-4">
                 You've completed all cybersecurity scenarios in the library!
               </p>
-              <div className="bg-blue-50 rounded-2xl p-4 mb-6">
-                <p className="text-blue-800 font-semibold mb-2">📚 Skills Learned:</p>
-                <ul className="text-left text-sm text-blue-700 space-y-1">
+              <div className="bg-red-950/50 rounded-2xl p-4 mb-6 border border-red-800/50">
+                <p className="text-red-300 font-semibold mb-2">📚 Skills Learned:</p>
+                <ul className="text-left text-sm text-red-200 space-y-1">
                   <li>✓ Phishing email detection</li>
                   <li>✓ USB drive safety</li>
                   <li>✓ Public computer security</li>
@@ -86,7 +86,7 @@ export default function LibraryUI({ onScenarioComplete, onFeedback, onExitLibrar
               </div>
               <motion.button
                 onClick={handleExit}
-                className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition"
+                className="w-full py-3 px-6 bg-linear-to-r from-red-800 to-red-900 text-red-100 rounded-full font-semibold shadow-lg hover:shadow-xl transition border border-red-700"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -102,7 +102,7 @@ export default function LibraryUI({ onScenarioComplete, onFeedback, onExitLibrar
         {!feedback && !isCompleted && (
           <motion.div
             key={`scenario-${index}`}
-            className="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 max-w-2xl w-full pointer-events-auto"
+            className="bg-linear-to-br from-gray-900 to-red-950 backdrop-blur-md rounded-3xl shadow-2xl p-6 max-w-2xl w-full pointer-events-auto border-2 border-red-800/50"
             initial={{ y: 50, opacity: 0, scale: 0.95 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: -50, opacity: 0, scale: 0.95 }}
@@ -111,12 +111,12 @@ export default function LibraryUI({ onScenarioComplete, onFeedback, onExitLibrar
             <div className="flex items-start gap-3 mb-4">
               <div className="text-4xl">🕵️</div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-800">{scenario.title}</h3>
-                <p className="text-sm text-gray-500">Scenario {index + 1} of {libraryScenarios.length}</p>
+                <h3 className="text-xl font-bold text-red-100">{scenario.title}</h3>
+                <p className="text-sm text-red-300">Scenario {index + 1} of {libraryScenarios.length}</p>
               </div>
             </div>
             
-            <p className="text-gray-700 mb-6 leading-relaxed">{scenario.text}</p>
+            <p className="text-red-200 mb-6 leading-relaxed">{scenario.text}</p>
             
             <div className="space-y-3">
               {scenario.choices.map((choice, i) => (
@@ -132,7 +132,7 @@ export default function LibraryUI({ onScenarioComplete, onFeedback, onExitLibrar
         {feedback && !isCompleted && (
           <motion.div
             key="feedback"
-            className="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 max-w-2xl w-full pointer-events-auto"
+            className="bg-linear-to-br from-gray-900 to-red-950 backdrop-blur-md rounded-3xl shadow-2xl p-6 max-w-2xl w-full pointer-events-auto border-2 border-red-800/50"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
@@ -147,12 +147,12 @@ export default function LibraryUI({ onScenarioComplete, onFeedback, onExitLibrar
               >
                 {feedback.includes('Great') || feedback.includes('Smart') || feedback.includes('Excellent') ? '✅' : '⚠️'}
               </motion.div>
-              <p className="text-gray-800 text-lg leading-relaxed">{feedback}</p>
+              <p className="text-red-100 text-lg leading-relaxed">{feedback}</p>
             </div>
             
             <motion.button
               onClick={handleNext}
-              className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition"
+              className="w-full py-3 px-6 bg-linear-to-r from-red-800 to-red-900 text-red-100 rounded-full font-semibold shadow-lg hover:shadow-xl transition border border-red-700"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >

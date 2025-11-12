@@ -8,7 +8,7 @@ import LandingUI from "./LandingUI";
 import Player from "./Player";
 import PlayerUI from "./PlayerUI";
 
-export default function LandingScene({ onEnterCampus, onEnterDorm }) { 
+export default function LandingScene({ onEnterCampus, onEnterDorm, onEnterLibrary }) { 
   const [campusEntered, setCampusEntered] = useState(false);
   const [showBuildingModal, setShowBuildingModal] = useState(null); // null or buildingId
   const [showPlayer, setShowPlayer] = useState(false);
@@ -31,7 +31,7 @@ export default function LandingScene({ onEnterCampus, onEnterDorm }) {
       name: "Library",
       icon: "📚",
       description: "The campus library. A quiet place to study and research.",
-      canEnter: false
+      canEnter: true
     },
     "east-quad-1": {
       name: "Cafeteria",
@@ -61,6 +61,8 @@ export default function LandingScene({ onEnterCampus, onEnterDorm }) {
     setShowBuildingModal(null);
     if (buildingId === "dorm") {
       onEnterDorm?.();
+    } else if (buildingId === "west-quad-1") {
+      onEnterLibrary?.();
     }
     // Other buildings will be handled later
   };
