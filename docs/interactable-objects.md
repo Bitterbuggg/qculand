@@ -64,10 +64,10 @@ This document catalogs every in-game control the player can click or tap in the 
   | Instance | Position (x, y, z) | Rotation (x, y, z) | Interactable |
   | --- | --- | --- | --- |
   | Center quad (Server Room) `(0, 0, -4.35)` | `(0, 0, 0)` | **Yes** (🔒 Coming Soon) |
-  | West quad 1 (Library) `(-2, 0, -2.5)` | `(0, pi/2, 0)` | **Yes** (📚 Coming Soon) |
+  | West quad 1 (Library) `(-2, 0, -2.5)` | `(0, pi/2, 0)` | **Yes** (📚 Enterable) |
   | East quad 1 (Cafeteria) `(2, 0, -2.5)` | `(0, -pi/2, 0)` | **Yes** (🍽️ Coming Soon) |
   | West quad 2 (Dorm) `(-2, 0, 0)` | `(0, pi/2, 0)` | **Yes** (🏠 Enterable) |
-  | East quad 2 (Faculty) `(2, 0, 0)` | `(0, -pi/2, 0)` | **Yes** (👨‍🏫 Coming Soon) |
+  | East quad 2 (Faculty) `(2, 0, 0)` | `(0, -pi/2, 0)` | **Yes** (👨‍🏫 Enterable) |
 
 - **All Buildings** (`src/components/scenes/LandingScene/Models/Bldg1.jsx`): Every building now features:
   - **Hover effect**: Blue emissive glow (`#4488ff`) applied to all meshes when cursor hovers
@@ -85,7 +85,7 @@ This document catalogs every in-game control the player can click or tap in the 
   2. **Library** 📚
      - Position: `(-2, 0, -2.5)` - Front-left building (back position)
      - Description: "The campus library. A quiet place to study and research."
-     - Status: Coming Soon (disabled entry button)
+     - Status: **Enterable** - "Enter Library" button transitions to LibraryScene
   
   3. **Cafeteria** 🍽️
      - Position: `(2, 0, -2.5)` - Front-right building (back position)
@@ -100,8 +100,8 @@ This document catalogs every in-game control the player can click or tap in the 
   
   5. **Faculty Office** 👨‍🏫
      - Position: `(2, 0, 0)` - Front-right building on the right side of the walkway
-     - Description: "Faculty offices and administrative services."
-     - Status: Coming Soon (disabled entry button)
+     - Description: "Faculty offices and administrative services. Learn about sensitive data protection and security protocols."
+     - Status: **Enterable** - "Enter Faculty Office" button transitions to FacultyScene
 
 - **Modal Actions**:
   - **Enter [Building] button**: Only enabled for Dormitory; transitions to the building's scene
@@ -173,6 +173,114 @@ Every dorm challenge surfaces three choice buttons. Selecting one stores the fee
   - **Ignore and delete** -> "Good - if it looks sketchy, trash it safely."
 
 - **Continue button**: Appears on the feedback modal after any choice. Clicking clears the modal; when the final scenario is done it triggers `onScenarioComplete`, which `DormScene` currently uses to increment the camera stage.
+
+## Library Scenario Cards (`src/components/scenes/LibraryScene/LibraryUI.jsx`)
+
+Every library challenge presents three choice buttons focused on safe research and phishing detection. Based on Chapter 2 of the story where Cipher has spread deceit in the library's digital system.
+
+### Scenario 1 - Librarian Email (`librarianPhishing`)
+
+- Prompt: "You receive an email from 'librarian@qcu-library.com' asking for your login details 'to renew access.' What do you do?"
+- Choices:
+  - **Verify with the real librarian in person** -> "Excellent! Always verify suspicious requests in person or through official channels."
+  - **Reply with your login details** -> "That's a phishing trap! Never share credentials via email."
+  - **Click the link to 'verify' quickly** -> "Dangerous! That link could steal your information or install malware."
+
+### Scenario 2 - Textbook Websites (`textbookWebsites`)
+
+- Prompt: "You need a textbook and find two websites offering it: 'qcu-library-books.com' and 'qculibrary.edu.ph'. Which is safer?"
+- Choices:
+  - **qculibrary.edu.ph - official domain** -> "Smart! Official .edu.ph domains are verified and trustworthy."
+  - **qcu-library-books.com - looks official** -> "That's a fake site! Attackers use similar-looking domains to trick users."
+  - **Download from both to compare** -> "Never download from unverified sites - you could get malware!"
+
+### Scenario 3 - Catalog Encryption (`catalogEncryption`)
+
+- Prompt: "A pop-up says: 'Your library catalog is encrypted! Pay 500 pesos to unlock.' What do you do?"
+- Choices:
+  - **Report to IT and don't pay** -> "Excellent! Ransomware relies on panic. Never pay and always report to IT."
+  - **Pay immediately to restore access** -> "That encourages attackers! Paying doesn't guarantee recovery."
+  - **Restart the computer** -> "That won't help with ransomware. You need to report it to IT immediately."
+
+### Scenario 4 - Academic Update (`academicUpdate`)
+
+- Prompt: "An urgent pop-up says: 'Important academic update! Click here now!' The link is 'qcu-update.net'. What do you do?"
+- Choices:
+  - **Close it and check official channels** -> "Smart! Legitimate updates come through official university portals."
+  - **Click to see the update** -> "That's likely a phishing link! Urgency is a common manipulation tactic."
+  - **Share with classmates** -> "Don't spread potential threats! Verify first, then warn others if it's fake."
+
+### Scenario 5 - E-book Attachment (`ebookAttachment`)
+
+- Prompt: "You receive an email with 'Research_Material.exe' attached, claiming it's an e-book. What do you do?"
+- Choices:
+  - **Delete immediately - .exe is executable** -> "Excellent! E-books should be .pdf, .epub, or .mobi, never .exe files."
+  - **Download and scan with antivirus** -> "Better than running it directly, but .exe files should be avoided entirely."
+  - **Open it to check** -> "That's extremely dangerous! .exe files can install malware instantly."
+
+### Scenario 6 - Mismatched URL (`mismatchedURL`)
+
+- Prompt: "An email shows a link labeled 'qcu.edu.ph/library' but hovering reveals 'qcu-lib.tk'. What do you do?"
+- Choices:
+  - **Don't click - the URLs don't match** -> "Great catch! Mismatched URLs are a clear sign of phishing."
+  - **Click since it mentions QCU** -> "That's a phishing attack! Always verify the actual URL, not just the display text."
+  - **Copy and paste into browser** -> "Still dangerous! The underlying URL is malicious regardless of how you access it."
+
+- **Continue button**: Appears on the feedback modal after any choice. Clicking advances to the next scenario or shows the completion screen with skills summary.
+
+## Faculty Office Scenario Cards (`src/components/scenes/FacultyScene/FacultyUI.jsx`)
+
+Every faculty office challenge presents three choice buttons focused on sensitive data protection and administrative security. Based on Chapter 4 of the story where Arius investigates a data breach in the faculty offices.
+
+### Scenario 1 - Suspicious Email (`dataBreachInvestigation`)
+
+- Prompt: "You receive an urgent email from 'dean@qcu-admin.net' asking you to verify your student records immediately by clicking a link. What do you do?"
+- Choices:
+  - **Verify the sender's email domain first** -> "Excellent! QCU's official domain is @qcu.edu.ph, not @qcu-admin.net. This is a phishing attempt."
+  - **Click the link immediately** -> "That's dangerous! Always verify sender domains before clicking links in urgent emails."
+  - **Reply with your student ID** -> "Never share credentials via email! Official requests come through secure portals."
+
+### Scenario 2 - Sticky Note Password (`stickyNotePassword`)
+
+- Prompt: "While waiting in the faculty office, you notice a sticky note on a monitor with 'Admin123' written on it. What should you do?"
+- Choices:
+  - **Report it to the IT department** -> "Great choice! Passwords on sticky notes are a serious security risk and should be reported."
+  - **Ignore it - not your problem** -> "Security is everyone's responsibility. Ignoring risks can lead to data breaches."
+  - **Take a photo and post about it** -> "Never share security vulnerabilities publicly! Report them through proper channels."
+
+### Scenario 3 - Shared Folder Access (`sharedFolder`)
+
+- Prompt: "A professor asks you to upload your project to a shared Google Drive folder. You notice the folder is set to 'Anyone with the link can edit.' What do you do?"
+- Choices:
+  - **Request restricted access permissions** -> "Smart thinking! Sensitive files should have restricted access to prevent unauthorized changes."
+  - **Upload anyway - it's convenient** -> "Convenience isn't worth the risk. Open permissions allow anyone to modify or delete files."
+  - **Share the link on social media** -> "That's extremely risky! You'd be exposing academic work to the entire internet."
+
+### Scenario 4 - Unattended Computer (`unlockedComputer`)
+
+- Prompt: "You enter a faculty office and find an unlocked computer displaying student grades. The professor stepped out. What do you do?"
+- Choices:
+  - **Lock the computer and wait outside** -> "Excellent! Protecting others' privacy shows integrity and responsibility."
+  - **Check your own grades quickly** -> "That's unauthorized access! Even checking your own data this way violates privacy policies."
+  - **Leave it as is and sit down** -> "Ignoring security risks makes you complicit. Always secure unattended systems."
+
+### Scenario 5 - Faculty Impersonation (`impersonation`)
+
+- Prompt: "Someone calls claiming to be from IT support, asking for your student portal password to 'fix your account.' They sound official. What do you do?"
+- Choices:
+  - **Hang up and contact IT directly** -> "Perfect! Real IT staff never ask for passwords. Always verify through official channels."
+  - **Give them your password** -> "Never share passwords over the phone! This is a social engineering attack."
+  - **Give them a fake password** -> "Better than giving the real one, but you should hang up and report the call instead."
+
+### Scenario 6 - Document Authenticity (`documentVerification`)
+
+- Prompt: "You receive a scanned memo about a 'mandatory security update' requiring you to download software from a link. The document has typos and no official letterhead. What do you do?"
+- Choices:
+  - **Verify with the IT department first** -> "Excellent! Always verify suspicious documents through official channels before taking action."
+  - **Download the software immediately** -> "That could be malware! Typos and missing letterheads are red flags for fake documents."
+  - **Forward it to classmates** -> "Never spread unverified information! You could be helping spread a malware campaign."
+
+- **Continue button**: Appears on the feedback modal after any choice. Clicking advances to the next scenario or shows the completion screen with skills summary including email domain verification, physical security awareness, shared folder permissions, privacy protection, social engineering defense, and document authenticity verification.
 
 ## Recovery Controls
 

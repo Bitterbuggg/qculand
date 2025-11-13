@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import LandingScene from "./LandingScene/LandingScene";
 import DormScene from "./DormScene/DormScene";
 import LibraryScene from "./LibraryScene/LibraryScene";
+import FacultyScene from "./FacultyScene/FacultyScene";
 
 function LoadingScene() {
   return (
@@ -130,6 +131,7 @@ export default function SceneManager() {
               onEnterCampus={() => handleSceneChange("dorm")}
               onEnterDorm={() => handleSceneChange("dorm")}
               onEnterLibrary={() => handleSceneChange("library")}
+              onEnterFaculty={() => handleSceneChange("faculty")}
             />
           </motion.div>
         )}
@@ -157,6 +159,19 @@ export default function SceneManager() {
             className="absolute w-full h-full"
           >
             <LibraryScene onExit={() => handleSceneChange("landing")} />
+          </motion.div>
+        )}
+
+        {currentScene === "faculty" && !isLoading && (
+          <motion.div
+            key="faculty"
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="absolute w-full h-full"
+          >
+            <FacultyScene onExit={() => handleSceneChange("landing")} />
           </motion.div>
         )}
       </AnimatePresence>

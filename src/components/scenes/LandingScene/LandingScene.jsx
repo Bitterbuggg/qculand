@@ -8,7 +8,7 @@ import LandingUI from "./LandingUI";
 import Player from "./Player";
 import PlayerUI from "./PlayerUI";
 
-export default function LandingScene({ onEnterCampus, onEnterDorm, onEnterLibrary }) { 
+export default function LandingScene({ onEnterCampus, onEnterDorm, onEnterLibrary, onEnterFaculty }) { 
   const [campusEntered, setCampusEntered] = useState(false);
   const [showBuildingModal, setShowBuildingModal] = useState(null); // null or buildingId
   const [showPlayer, setShowPlayer] = useState(false);
@@ -48,8 +48,8 @@ export default function LandingScene({ onEnterCampus, onEnterDorm, onEnterLibrar
     "east-quad-2": {
       name: "Faculty Office",
       icon: "👨‍🏫",
-      description: "Faculty offices and administrative services.",
-      canEnter: false
+      description: "Faculty offices and administrative services. Learn about sensitive data protection and security protocols.",
+      canEnter: true
     }
   };
 
@@ -63,6 +63,8 @@ export default function LandingScene({ onEnterCampus, onEnterDorm, onEnterLibrar
       onEnterDorm?.();
     } else if (buildingId === "west-quad-1") {
       onEnterLibrary?.();
+    } else if (buildingId === "east-quad-2") {
+      onEnterFaculty?.();
     }
     // Other buildings will be handled later
   };
