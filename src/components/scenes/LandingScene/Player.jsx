@@ -1,13 +1,16 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useStore } from '../../../hooks/useStore';
 
-export default function Player() {
+export default function Player({ useStoredPosition = false }) {
   const playerRef = useRef();
   const { camera, raycaster } = useThree();
+  const { playerPosition, setPlayerPosition } = useStore();
   
-  // Movement state
-  const [position, setPosition] = useState([0, 0, 5]);
+  // Movement state - use stored position only if explicitly told to (returning from building)
+  // Otherwise use default position [0, 0, 5] (fresh start / clicking Enter Campus)
+  const [position, setPosition] = useState(useStoredPosition ? playerPosition : [0, 0, 5]);
   const velocity = useRef(new THREE.Vector3());
   const targetPosition = useRef(null);
   const moveSpeed = 0.03;
@@ -185,6 +188,9 @@ export default function Player() {
     }
   }, [camera]);
 
+  // Save position to store periodically (every 30 frames to avoid excessive updates)
+  const frameCount = useRef(0);
+
   // Update player position and camera every frame
   useFrame(() => {
     if (!playerRef.current) return;
@@ -195,6 +201,12 @@ export default function Player() {
       player.position.y,
       player.position.z
     );
+
+    // Save position to store every 30 frames
+    frameCount.current++;
+    if (frameCount.current % 30 === 0) {
+      setPlayerPosition([player.position.x, player.position.y, player.position.z]);
+    }
 
     // Reset velocity
     velocity.current.set(0, 0, 0);

@@ -5,12 +5,14 @@ import DormUI from './DormUI';
 import LoadingFallback from '../../LoadingFallback';
 import ErrorBoundary from '../../ErrorBoundary';
 import { useState, Suspense, lazy, useCallback } from 'react';
+import { useStore } from '../../../hooks/useStore';
 
 // Lazy load heavy 3D components
 const DormEnvironment = lazy(() => import('./DormEnvironment'));
 const DormStudent = lazy(() => import('./DormStudent'));
 
 export default function DormScene({ onExitDorm }) {
+  const { setReturningFromBuilding } = useStore();
   const [stage, setStage] = useState(0);
   const [studentAction, setStudentAction] = useState('typing');
   const [retryCount, setRetryCount] = useState(0);
@@ -59,6 +61,19 @@ export default function DormScene({ onExitDorm }) {
         onFeedback={handleFeedback}
         onExitDorm={onExitDorm}
       />
+
+      {/* Back button */}
+      <div className="absolute top-6 left-6 z-50">
+        <button 
+          onClick={() => {
+            setReturningFromBuilding(true);
+            onExitDorm?.();
+          }} 
+          className="px-4 py-2 bg-white/90 rounded shadow hover:bg-white transition-colors"
+        >
+          ← Back
+        </button>
+      </div>
     </div>
   );
 }

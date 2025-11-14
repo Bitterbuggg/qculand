@@ -4,11 +4,13 @@ import LoadingFallback from '../../LoadingFallback';
 import ErrorBoundary from '../../ErrorBoundary';
 import FacultyPlayer from './FacultyPlayer';
 import FacultyPlayerUI from './FacultyPlayerUI';
+import { useStore } from '../../../hooks/useStore';
 
 const FacultyEnvironment = lazy(() => import('./FacultyEnvironment'));
 import FacultyUI from './FacultyUI';
 
 export default function FacultyScene({ onExit }) {
+	const { setReturningFromBuilding } = useStore();
 	const [showScenarios, setShowScenarios] = useState(false);
 	
 	const handleScenarioComplete = useCallback(() => {
@@ -21,8 +23,9 @@ export default function FacultyScene({ onExit }) {
 
 	const handleExitFaculty = useCallback(() => {
 		setShowScenarios(false);
+		setReturningFromBuilding(true);
 		if (onExit) onExit();
-	}, [onExit]);
+	}, [onExit, setReturningFromBuilding]);
 	
 	return (
 		<div className="w-full h-full fixed top-0 left-0">
@@ -55,7 +58,10 @@ export default function FacultyScene({ onExit }) {
 			{!showScenarios && (
 				<div className="absolute top-6 left-6 z-50">
 					<button 
-						onClick={() => onExit?.()} 
+						onClick={() => {
+							setReturningFromBuilding(true);
+							onExit?.();
+						}} 
 						className="px-4 py-2 bg-white/90 rounded shadow hover:bg-white transition-colors"
 					>
 						← Back

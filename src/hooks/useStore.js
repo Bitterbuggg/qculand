@@ -7,12 +7,18 @@ export const useStore = create(persist(
     inventory: [],
     quests: [],
     currentScene: 'LANDING',
+    playerPosition: [0, 0, 5], // Store player's last position in landing scene
+    campusEntered: false, // Track if player has entered campus
+    returningFromBuilding: false, // Track if coming back from building via Back button
 
     addItem: (item) => set((s) => ({ inventory: [...s.inventory, item] })),
     completeQuest: (id) => set((s) => ({
       quests: [...s.quests, { id, completed: true }],
     })),
     setScene: (scene) => set({ currentScene: scene }),
+    setPlayerPosition: (position) => set({ playerPosition: position }),
+    setCampusEntered: (entered) => set({ campusEntered: entered }),
+    setReturningFromBuilding: (returning) => set({ returningFromBuilding: returning }),
   }),
   {
     name: 'qculand-save', 
