@@ -8,7 +8,7 @@ import LandingUI from "./LandingUI";
 import Player from "./Player";
 import PlayerUI from "./PlayerUI";
 
-export default function LandingScene({ onEnterCampus, onEnterDorm, onEnterLibrary, onEnterFaculty }) { 
+export default function LandingScene({ onEnterCampus, onEnterDorm, onEnterLibrary, onEnterFaculty, onEnterCafeteria }) { 
   const [campusEntered, setCampusEntered] = useState(false);
   const [showBuildingModal, setShowBuildingModal] = useState(null); // null or buildingId
   const [showPlayer, setShowPlayer] = useState(false);
@@ -36,8 +36,8 @@ export default function LandingScene({ onEnterCampus, onEnterDorm, onEnterLibrar
     "east-quad-1": {
       name: "Cafeteria",
       icon: "🍽️",
-      description: "The student cafeteria. Grab a meal and socialize with friends.",
-      canEnter: false
+      description: "The student cafeteria. Learn about public Wi-Fi safety and network security.",
+      canEnter: true
     },
     "dorm": {
       name: "Dormitory",
@@ -65,6 +65,8 @@ export default function LandingScene({ onEnterCampus, onEnterDorm, onEnterLibrar
       onEnterLibrary?.();
     } else if (buildingId === "east-quad-2") {
       onEnterFaculty?.();
+    } else if (buildingId === "east-quad-1") {
+      onEnterCafeteria?.();
     }
     // Other buildings will be handled later
   };

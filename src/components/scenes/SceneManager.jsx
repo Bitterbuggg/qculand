@@ -4,6 +4,7 @@ import LandingScene from "./LandingScene/LandingScene";
 import DormScene from "./DormScene/DormScene";
 import LibraryScene from "./LibraryScene/LibraryScene";
 import FacultyScene from "./FacultyScene/FacultyScene";
+import CafeteriaScene from "./CafeteriaScene/CafeteriaScene";
 
 function LoadingScene() {
   return (
@@ -132,6 +133,7 @@ export default function SceneManager() {
               onEnterDorm={() => handleSceneChange("dorm")}
               onEnterLibrary={() => handleSceneChange("library")}
               onEnterFaculty={() => handleSceneChange("faculty")}
+              onEnterCafeteria={() => handleSceneChange("cafeteria")}
             />
           </motion.div>
         )}
@@ -172,6 +174,19 @@ export default function SceneManager() {
             className="absolute w-full h-full"
           >
             <FacultyScene onExit={() => handleSceneChange("landing")} />
+          </motion.div>
+        )}
+
+        {currentScene === "cafeteria" && !isLoading && (
+          <motion.div
+            key="cafeteria"
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="absolute w-full h-full"
+          >
+            <CafeteriaScene onExit={() => handleSceneChange("landing")} />
           </motion.div>
         )}
       </AnimatePresence>

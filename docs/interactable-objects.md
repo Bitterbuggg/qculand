@@ -65,7 +65,7 @@ This document catalogs every in-game control the player can click or tap in the 
   | --- | --- | --- | --- |
   | Center quad (Server Room) `(0, 0, -4.35)` | `(0, 0, 0)` | **Yes** (🔒 Coming Soon) |
   | West quad 1 (Library) `(-2, 0, -2.5)` | `(0, pi/2, 0)` | **Yes** (📚 Enterable) |
-  | East quad 1 (Cafeteria) `(2, 0, -2.5)` | `(0, -pi/2, 0)` | **Yes** (🍽️ Coming Soon) |
+  | East quad 1 (Cafeteria) `(2, 0, -2.5)` | `(0, -pi/2, 0)` | **Yes** (🍽️ Enterable) |
   | West quad 2 (Dorm) `(-2, 0, 0)` | `(0, pi/2, 0)` | **Yes** (🏠 Enterable) |
   | East quad 2 (Faculty) `(2, 0, 0)` | `(0, -pi/2, 0)` | **Yes** (👨‍🏫 Enterable) |
 
@@ -89,8 +89,8 @@ This document catalogs every in-game control the player can click or tap in the 
   
   3. **Cafeteria** 🍽️
      - Position: `(2, 0, -2.5)` - Front-right building (back position)
-     - Description: "The student cafeteria. Grab a meal and socialize with friends."
-     - Status: Coming Soon (disabled entry button)
+     - Description: "The student cafeteria. Learn about public Wi-Fi safety and network security."
+     - Status: **Enterable** - "Enter Cafeteria" button transitions to CafeteriaScene
   
   4. **Dormitory** 🏠
      - Position: `(-2, 0, 0)` - Front-left building on the left side of the walkway
@@ -281,6 +281,60 @@ Every faculty office challenge presents three choice buttons focused on sensitiv
   - **Forward it to classmates** -> "Never spread unverified information! You could be helping spread a malware campaign."
 
 - **Continue button**: Appears on the feedback modal after any choice. Clicking advances to the next scenario or shows the completion screen with skills summary including email domain verification, physical security awareness, shared folder permissions, privacy protection, social engineering defense, and document authenticity verification.
+
+## Cafeteria Scenario Cards (`src/components/scenes/CafeteriaScene/CafeteriaUI.jsx`)
+
+Every cafeteria challenge presents three choice buttons focused on public Wi-Fi safety and network security. Based on Chapter 3 of the story where students learn about the dangers of unsecured networks and social engineering in public spaces.
+
+### Scenario 1 - Wi-Fi Network Selection (`wifiSelection`)
+
+- Prompt: "You arrive at the busy cafeteria and need to connect to Wi-Fi. You see three networks: 'QCU_Campus_Secure', 'FreeCampus_WiFi', and 'QCU-Student-Net'. Which do you choose?"
+- Choices:
+  - **QCU_Campus_Secure - requires login** -> "Excellent! Official secured networks with authentication are always the safest choice."
+  - **FreeCampus_WiFi - no password needed** -> "Dangerous! Free, open networks are often set up by attackers to steal your data."
+  - **QCU-Student-Net - looks official** -> "Be careful! Attackers create fake networks with official-sounding names. Always verify first."
+
+### Scenario 2 - QR Code Scan (`qrCodePoster`)
+
+- Prompt: "You see a poster advertising 'Free Campus Vouchers - Scan QR Code!' but it has no official QCU logo or department name. What do you do?"
+- Choices:
+  - **Verify with cafeteria staff first** -> "Smart thinking! Always verify promotional materials through official channels before scanning."
+  - **Scan it immediately for free vouchers** -> "That's risky! Malicious QR codes can lead to phishing sites or download malware."
+  - **Share the QR code with friends** -> "Never spread unverified content! You could be helping distribute a scam."
+
+### Scenario 3 - Overheard Information (`overheardConversation`)
+
+- Prompt: "While studying, you overhear students loudly discussing exam answers and login credentials. Some information could help you, but it was meant to be private. What do you do?"
+- Choices:
+  - **Ignore it and focus on your work** -> "Perfect! Respecting others' privacy and not using information obtained unethically is crucial."
+  - **Write down the login credentials** -> "That's unethical! Using overheard credentials is unauthorized access and violates privacy."
+  - **Join their conversation to learn more** -> "Don't encourage oversharing! Private information should stay private."
+
+### Scenario 4 - IT Support Impersonation (`itSupportImpersonation`)
+
+- Prompt: "Someone in a polo shirt approaches claiming to be from IT support. They say they need to 'check your device for security updates' and ask you to unlock your laptop. What do you do?"
+- Choices:
+  - **Ask for official ID and verify with IT** -> "Excellent! Real IT staff carry official identification and won't mind verification."
+  - **Unlock it - they seem official** -> "Never trust appearances alone! Social engineers rely on looking legitimate."
+  - **Give them your password instead** -> "Even worse! IT staff never need your password to perform updates."
+
+### Scenario 5 - Public Computer Usage (`publicComputerUsage`)
+
+- Prompt: "You need to quickly check your email on a cafeteria public computer. The previous user left their session logged in. What should you do?"
+- Choices:
+  - **Log them out, clear history, then use it** -> "Great! Always secure the previous session and clear your data when done on public computers."
+  - **Just minimize their session and use it** -> "That's risky! Never leave others' sessions active, and always protect your own privacy."
+  - **Use your phone instead** -> "Safe choice! When possible, avoid public computers for sensitive tasks."
+
+### Scenario 6 - USB Charging Station (`usbChargingStation`)
+
+- Prompt: "Your phone battery is low. You see a free USB charging station with multiple cables, but no information about who maintains it. What do you do?"
+- Choices:
+  - **Use your own cable and power adapter** -> "Smart! Unknown USB ports can install malware. Always use your own trusted charging equipment."
+  - **Use the provided cables** -> "Risky! Compromised USB cables can transfer malware while charging (juice jacking)."
+  - **Ask strangers if it's safe** -> "They might not know either! It's better to use your own equipment or official charging stations."
+
+- **Continue button**: Appears on the feedback modal after any choice. Clicking advances to the next scenario or shows the completion screen with skills summary including secure Wi-Fi identification, QR code safety verification, privacy and information protection, social engineering awareness, public computer security, and USB charging safety (juice jacking).
 
 ## Recovery Controls
 
