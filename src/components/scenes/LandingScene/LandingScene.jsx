@@ -105,7 +105,7 @@ export default function LandingScene({ onEnterCampus, onEnterDorm, onEnterLibrar
           />
         )}
 
-        <LandingModels onBuildingClick={handleBuildingClick} campusEntered={campusEntered} />
+        <LandingModels onBuildingClick={handleBuildingClick} campusEntered={showPlayer} />
         
         {/* Show player after entering campus */}
         {showPlayer && <Player useStoredPosition={playerShouldUseStoredPosition} />}
@@ -163,7 +163,7 @@ export default function LandingScene({ onEnterCampus, onEnterDorm, onEnterLibrar
                   </motion.button>
                 ) : (
                   <div className="w-full px-6 py-3 bg-gray-300 text-gray-500 font-bold rounded-full cursor-not-allowed">
-                    Coming Soon
+                    Locked
                   </div>
                 )}
                 <motion.button
