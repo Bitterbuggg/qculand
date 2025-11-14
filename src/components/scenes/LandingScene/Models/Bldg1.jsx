@@ -66,9 +66,11 @@ export default function Bldg1({ onClick, isInteractable, buildingId, ...props })
     <primitive
       object={clonedScene}
       scale={0.575}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
-      onClick={handleClick}
+      {...(isInteractable && {
+        onPointerOver: handlePointerOver,
+        onPointerOut: handlePointerOut,
+        onClick: handleClick
+      })}
       {...props} 
     />
   );
