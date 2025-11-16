@@ -2,6 +2,101 @@
 
 This document catalogs every in-game control the player can click or tap in the current build. Source references point to the React components so the behavior can be traced back to code when needed.
 
+## Quick Reference: Interactable Assets & Positions
+
+Use this cheat sheet when you just need to know what can be clicked and where it lives on screen or in world space.
+
+### Entry Flow UI
+
+| Asset | Position / Placement | Interaction |
+| --- | --- | --- |
+| Start Adventure button | Intro overlay center; appears roughly two seconds after the splash screen loads | Calls `startGame()`, starts looping `./audio/gamebg.ogg`, shows the faux loading screen, then hands off to the landing scene |
+| Enter Campus button | Landing UI overlay center CTA | Toggles `LandingCamera`'s traversal, invokes `onEnterCampus`, and now spawns the controllable player character on the campus |
+
+### Landing Scene Hub
+
+| Asset | Position / Placement | Interaction |
+| --- | --- | --- |
+| Server Room building | `(0, 0, -4.35)` (center quad) | Hover emissive glow, pointer cursor, click opens the locked "Coming Soon" modal |
+| Library building | `(-2, 0, -2.5)` (west/back quad) | Hover glow + click opens modal with an active **Enter Library** CTA |
+| Cafeteria building | `(2, 0, -2.5)` (east/back quad) | Hover glow + click opens modal with an active **Enter Cafeteria** CTA |
+| Dormitory building | `(-2, 0, 0)` (west/front quad) | Hover glow + proximity prompt (2.5u radius) that exposes **Enter Dormitory** |
+| Faculty Office building | `(2, 0, 0)` (east/front quad) | Hover glow + click opens modal with **Enter Faculty Office** |
+| Enter Building prompt | Appears in the player HUD when the character is within 2.5 units of the targeted building center | **Enter Building** launches the building scene; **Cancel** closes the prompt |
+
+### Bee OS Tablet Overlay
+
+| Asset | Position / Placement | Interaction |
+| --- | --- | --- |
+| Bee OS toggle | Floating pill anchored to the bottom-right corner of the viewport | Toggles the Bee OS overlay (`open` state) on/off |
+| Home tile | First tile inside the Bee OS dock (overlay center) | Shows initials, full name, and level from the global store |
+| Inventory tile | Dock tile inside Bee OS (overlay center) | Shows collected inventory items or the empty placeholder |
+| Quests tile | Dock tile inside Bee OS (overlay center) | Shows quest completion list with progress bars |
+| Badges tile | Dock tile inside Bee OS (overlay center) | Shows the badge cabinet placeholder cards |
+
+### Dorm Scene (DormUI + DormCamera)
+
+Camera anchor coordinates come from `src/components/scenes/DormScene/DormCamera.jsx`.
+
+| Asset | Position / Placement | Interaction |
+| --- | --- | --- |
+| Stage 1 - Laptop desk (`deviceSetup`) | Camera target `(2, 1.5, 2.25)` that frames the laptop workstation | Scenario card about Wi-Fi/device setup with three choices |
+| Stage 2 - Router shelf (`wifiDilemma`) | Camera target `(-2, 1, 2.25)` aimed at the router shelving | Scenario card about router configuration |
+| Stage 3 - Desk USB close-up (`usbGift`) | Camera target `(0, 1, 2.35)` focusing on the desk surface | Scenario card about handling an unknown USB drive |
+| Stage 4 - Roommate interaction (`roommateShortcut`) | Camera target `(1, 1.2, 2.35)` pointed toward the roommate/bunk area | Scenario card about protecting the laptop when a roommate borrows it |
+| Stage 5 - Social feed corner (`postOrPrivate`) | Camera target `(-1, 1.8, 2.15)` tilted toward the social feed wall | Scenario card about oversharing a class schedule |
+| Stage 6 - Laptop email focus (`phishingSearch`) | Camera target `(0, 1.5, 2.25)` centered on the laptop display | Scenario card about reacting to a phishing email |
+| Continue / Finish button | Feedback modal center | Dismisses the feedback modal, advancing to the next dorm stage or ending the flow |
+
+### Library Scene (LibraryUI.jsx)
+
+All scenario cards render as a centered overlay inside the Library scene HUD.
+
+| Asset | Position / Placement | Interaction |
+| --- | --- | --- |
+| Scenario 1 - Librarian Email (`librarianPhishing`) | Library UI modal centered over the scene | Three response buttons covering verification of a suspicious librarian email |
+| Scenario 2 - Textbook Websites (`textbookWebsites`) | Library UI modal centered over the scene | Three choice buttons comparing official vs. fake textbook sites |
+| Scenario 3 - Catalog Encryption (`catalogEncryption`) | Library UI modal centered over the scene | Three choice buttons about ransomware pop-up handling |
+| Scenario 4 - Academic Update (`academicUpdate`) | Library UI modal centered over the scene | Three choice buttons dealing with an urgent pop-up link |
+| Scenario 5 - E-book Attachment (`ebookAttachment`) | Library UI modal centered over the scene | Three choice buttons about a malicious `.exe` e-book attachment |
+| Scenario 6 - Mismatched URL (`mismatchedURL`) | Library UI modal centered over the scene | Three choice buttons about mismatched link destinations |
+| Continue button | Modal footer center | Advances to the next library scenario or completes the scene |
+
+### Cafeteria Scene (CafeteriaUI.jsx)
+
+All cafeteria scenarios use the centered overlay that sits above the cafeteria models.
+
+| Asset | Position / Placement | Interaction |
+| --- | --- | --- |
+| Scenario 1 - Wi-Fi Network Selection (`wifiSelection`) | Cafeteria UI modal centered over the scene | Three choice buttons about choosing the safe campus Wi-Fi |
+| Scenario 2 - QR Code Scan (`qrCodePoster`) | Cafeteria UI modal centered over the scene | Three choice buttons responding to an unverified QR promo poster |
+| Scenario 3 - Overheard Information (`overheardConversation`) | Cafeteria UI modal centered over the scene | Three choice buttons about overheard credentials |
+| Scenario 4 - IT Support Impersonation (`itSupportImpersonation`) | Cafeteria UI modal centered over the scene | Three choice buttons about someone posing as IT support |
+| Scenario 5 - Public Computer Usage (`publicComputerUsage`) | Cafeteria UI modal centered over the scene | Three choice buttons about taking over a public computer |
+| Scenario 6 - USB Charging Station (`usbChargingStation`) | Cafeteria UI modal centered over the scene | Three choice buttons about using an untrusted USB charging hub |
+| Continue button | Modal footer center | Advances to the next cafeteria scenario or completes the scene |
+
+### Faculty Office Scene (FacultyUI.jsx)
+
+Faculty challenges also share the centered overlay layout.
+
+| Asset | Position / Placement | Interaction |
+| --- | --- | --- |
+| Scenario 1 - Suspicious Email (`dataBreachInvestigation`) | Faculty UI modal centered over the scene | Three choice buttons about an urgent dean email |
+| Scenario 2 - Sticky Note Password (`stickyNotePassword`) | Faculty UI modal centered over the scene | Three choice buttons about discovering a written password |
+| Scenario 3 - Shared Folder Access (`sharedFolder`) | Faculty UI modal centered over the scene | Three choice buttons about open Google Drive permissions |
+| Scenario 4 - Unattended Computer (`unlockedComputer`) | Faculty UI modal centered over the scene | Three choice buttons about an unlocked workstation with grades |
+| Scenario 5 - Faculty Impersonation (`impersonation`) | Faculty UI modal centered over the scene | Three choice buttons about a phone-based social engineering attempt |
+| Scenario 6 - Document Authenticity (`documentVerification`) | Faculty UI modal centered over the scene | Three choice buttons about a memo lacking official letterhead |
+| Continue button | Modal footer center | Advances to the next faculty office scenario or completes the scene |
+
+### Recovery Controls
+
+| Asset | Position / Placement | Interaction |
+| --- | --- | --- |
+| Retry Loading (Dorm scene) | Centered overlay inside DormScene when assets fail to preload | Reloads the entire page (`window.location.reload()`) |
+| Scene Error Retry | Centered overlay rendered by `ErrorBoundary` whenever a Canvas subtree throws | Resets the error boundary state and optionally calls the scene-level `onRetry` handler |
+
 ## Entry Flow UI
 
 - **Start Adventure button** (`src/components/scenes/SceneManager.jsx`, `IntroScene`): Appears about two seconds after the intro overlay loads, labeled "Yes". Calling `startGame()` begins looping `./audio/gamebg.ogg`, shows the loading screen for roughly one second, and then transitions the player into the landing scene.
