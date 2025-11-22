@@ -7,43 +7,37 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header>
+    <header>
+        <div class="container">
             <nav>
-                <div class="logo">
-                    <a href="#">QCU Land</a>
-                </div>
+                <a href="#">
+                    <img src="needed context/logo.png" alt="QCU Land Logo" class="logo-img">
+                </a>
                 <ul>
-                    <li><a href="#about">The Chronicle</a></li>
-                    <li><a href="#features">The Armory</a></li>
-                    <li><a href="#learning">The Library</a></li>
-                    <li><a href="#gameplay">The Battlefield</a></li>
-                    <li><a href="#media">Scrying Pool</a></li>
-                    <li><a href="#tech">The Forge</a></li>
-                    <li><a href="#play">Enter the Portal</a></li>
+                    <li><a href="about/">About</a></li>
+                    <li><a href="gameplay/">Gameplay</a></li>
+                    <li><a href="news/">News & Updates</a></li>
+                    <li><a href="team/">The Team</a></li>
                 </ul>
+                <button id="theme-toggle" title="Toggle light/dark theme">🌙</button>
             </nav>
-        </header>
-
+        </div>
+    </header>
+    <div class="container">
         <main>
             <section id="hero">
                 <div class="hero-content">
                     <h1>Welcome to QCU Land</h1>
-                    <p>Heed the call, adventurer! A new quest awaits thee in the digital realm of QCU Land. Hone your skills, for in this world, knowledge is your sharpest blade and vigilance your strongest shield.</p>
-                    <a href="#play" class="cta-button">Begin Your Journey</a>
+                    <p>When strange glitches and data leaks begin spreading across Quezon City University, one curious student—Arius—discovers that something sinister is manipulating the campus network. Guided by quick thinking and cyber awareness, Arius must defeat the malware creatures infecting each area of campus. But behind every glitch lies Cipher, an intelligent force controlling the Shadow Network.</p>
+                    <a href="gameplay/" class="cta-button">Begin Your Journey</a>
                 </div>
             </section>
 
-            <section id="about">
-                <h2>The Chronicle of QCU Land</h2>
-                <p>In the hallowed halls of QCU Land, a shadow looms. As a new student, you must embark on a perilous journey through a world fraught with digital dangers. From corrupted scrolls (phishing emails) to treacherous portals (unsecured Wi-Fi), your quest is to safeguard the kingdom's secrets and your own digital soul.</p>
-            </section>
-
             <section id="features">
-                <h2>The Armory: Your Arsenal</h2>
+                <h2>The Syllabus</h2>
                 <p>Explore a vast and immersive 3D world, rendered in a classic, low-poly art style.</p>
                 <p>Forge your own path in a story-driven adventure with branching narratives.</p>
                 <p>Face real-world cybersecurity threats, disguised as mythical beasts and magical traps.</p>
@@ -52,7 +46,7 @@
             </section>
 
             <section id="learning">
-                <h2>The Library: Ancient Knowledge</h2>
+                <h2>The Goal of this Game</h2>
                 <p>The wise mages of QCU Land have collected ancient tomes of knowledge to aid you in your quest. Study them well, and you will learn to:</p>
                 <p>Identify the tell-tale signs of dark magic (phishing, malware, and social engineering).</p>
                 <p>Think critically about your online actions and protect your digital identity.</p>
@@ -60,18 +54,8 @@
                 <p>Develop the habits of a true cybersecurity champion.</p>
             </section>
 
-            <section id="gameplay">
-                <h2>The Battlefield: The Path to Glory</h2>
-                <p>Your journey through QCU Land will be fraught with challenges. To succeed, you must:</p>
-                <p><strong>Explore:</strong> Traverse the sprawling 3D campus of QCU Land.</p>
-                <p><strong>Interact:</strong> Converse with the inhabitants of the land, inspect ancient artifacts, and decipher cryptic messages.</p>
-                <p><strong>Challenge:</strong> Test your skills in scenario-based puzzles and timed events.</p>
-                <p><strong>Outcome:</strong> Your choices will determine your fate. Earn reputation and unlock new abilities, or fall prey to the digital darkness.</p>
-                <p><strong>Progress:</strong> Complete quests to unlock new regions and unravel the mysteries of QCU Land.</p>
-            </section>
-
             <section id="media">
-                <h2>The Scrying Pool: Visions of the Realm</h2>
+                <h2>Minigames</h2>
                 <div class="media-gallery">
                     <img src="../public/HandLoading.gif" alt="A glimpse into the world of QCU Land">
                     <img src="../public/HandLoading.gif" alt="A fearsome digital beast">
@@ -80,7 +64,7 @@
             </section>
 
             <section id="tech">
-                <h2>The Forge: The Making of a Legend</h2>
+                <h2>Stack</h2>
                 <p>QCU Land was forged in the fires of modern technology:</p>
                 <p><strong>Game Engine:</strong> three.js, for a lightweight and powerful 3D experience.</p>
                 <p><strong>Frontend Framework:</strong> React, for a dynamic and responsive user interface.</p>
@@ -97,6 +81,7 @@
 
         <footer>
             <p>&copy; 2025 QCU Land. All rights reserved.</p>
+            <p><a href="about/index.html#">About</a> | <a href="gameplay/index.html#">Gameplay</a> | <a href="news/index.html#">News & Updates</a> | <a href="team/index.html#">The Team</a></p>
         </footer>
     </div>
     <script src="script.js"></script>
